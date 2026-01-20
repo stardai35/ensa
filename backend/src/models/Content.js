@@ -33,19 +33,19 @@ class Content {
   }
 
   static async create(data) {
-    const { cat_id, title_id, year, text, slug } = data;
+    const { cat_id, title_id, year, text, slug, image_url, video_url, description } = data;
     const [result] = await pool.query(
-      'INSERT INTO content (cat_id, title_id, year, text, slug) VALUES (?, ?, ?, ?, ?)',
-      [cat_id, title_id, year, text, slug]
+      'INSERT INTO content (cat_id, title_id, year, text, slug, image_url, video_url, description) VALUES (?, ?, ?, ?, ?, ?, ?, ?)',
+      [cat_id, title_id, year, text, slug, image_url || null, video_url || null, description || null]
     );
     return result.insertId;
   }
 
   static async update(id, data) {
-    const { cat_id, title_id, year, text, slug } = data;
+    const { cat_id, title_id, year, text, slug, image_url, video_url, description } = data;
     const [result] = await pool.query(
-      'UPDATE content SET cat_id = ?, title_id = ?, year = ?, text = ?, slug = ? WHERE id = ?',
-      [cat_id, title_id, year, text, slug, id]
+      'UPDATE content SET cat_id = ?, title_id = ?, year = ?, text = ?, slug = ?, image_url = ?, video_url = ?, description = ? WHERE id = ?',
+      [cat_id, title_id, year, text, slug, image_url || null, video_url || null, description || null, id]
     );
     return result.affectedRows;
   }
@@ -57,9 +57,24 @@ class Content {
 
   static async search(query) {
     const [rows] = await pool.query(
-      'SELECT c.*, cat.name as category_name FROM content c LEFT JOIN category cat ON c.cat_id = cat.id WHERE c.title_id LIKE ? OR c.text LIKE ?',
-      [`%${query}%`, `%${query}%`]
+      'SELECT c.*, cat.name as category_name FROM content c LEFT JOIN category cat ON c.cat_id = cat.id WHERE c.title_id LIKE ? OR c.text LIKE ? OR c.description LIKE ?',
+      [`%${query}%`, `%${query}%`, `%${query}%`]
     );
+    return rows;
+  }
+
+  static async getByMediaType(type) {
+    let query = 'SELECT c.*, cat.name as category_name FROM content c LEFT JOIN category cat ON c.cat_id = cat.id WHERE ';
+    
+    if (type === 'image') {
+      query += 'c.image_url IS NOT NULL';
+    } else if (type === 'video') {
+      query += 'c.video_url IS NOT NULL';
+    } else {
+      query += 'c.image_url IS NOT NULL OR c.video_url IS NOT NULL';
+    }
+    
+    const [rows] = await pool.query(query);
     return rows;
   }
 }

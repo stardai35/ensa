@@ -1,5 +1,7 @@
 import React, { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { contentAPI, categoryAPI } from '../../api/axiosConfig';
+import { authService } from '../../api/authService';
 import './AdminDashboard.css';
 
 function AdminDashboard() {
@@ -8,12 +10,17 @@ function AdminDashboard() {
   const [loading, setLoading] = useState(true);
   const [showForm, setShowForm] = useState(false);
   const [editingId, setEditingId] = useState(null);
+  const navigate = useNavigate();
+  const username = authService.getUsername();
   const [formData, setFormData] = useState({
     cat_id: '',
     title_id: '',
     year: '',
     text: '',
     slug: '',
+    description: '',
+    image: null,
+    video: null,
   });
 
   useEffect(() => {
@@ -43,19 +50,42 @@ function AdminDashboard() {
     }));
   };
 
+  const handleFileChange = (e) => {
+    const { name, files } = e.target;
+    setFormData(prev => ({
+      ...prev,
+      [name]: files[0] || null,
+    }));
+  };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
+      const formDataToSend = new FormData();
+      formDataToSend.append('cat_id', formData.cat_id);
+      formDataToSend.append('title_id', formData.title_id);
+      formDataToSend.append('year', formData.year);
+      formDataToSend.append('text', formData.text);
+      formDataToSend.append('slug', formData.slug);
+      formDataToSend.append('description', formData.description);
+      
+      if (formData.image) {
+        formDataToSend.append('image', formData.image);
+      }
+      if (formData.video) {
+        formDataToSend.append('video', formData.video);
+      }
+
       if (editingId) {
-        await contentAPI.update(editingId, formData);
+        await contentAPI.update(editingId, formDataToSend);
         alert('Content updated successfully!');
       } else {
-        await contentAPI.create(formData);
+        await contentAPI.create(formDataToSend);
         alert('Content created successfully!');
       }
       setShowForm(false);
       setEditingId(null);
-      setFormData({ cat_id: '', title_id: '', year: '', text: '', slug: '' });
+      setFormData({ cat_id: '', title_id: '', year: '', text: '', slug: '', description: '', image: null, video: null });
       fetchData();
     } catch (error) {
       alert('Error saving content: ' + error.message);
@@ -69,6 +99,9 @@ function AdminDashboard() {
       year: content.year,
       text: content.text,
       slug: content.slug,
+      description: content.description || '',
+      image: null,
+      video: null,
     });
     setEditingId(content.id);
     setShowForm(true);
@@ -89,7 +122,12 @@ function AdminDashboard() {
   const handleCancel = () => {
     setShowForm(false);
     setEditingId(null);
-    setFormData({ cat_id: '', title_id: '', year: '', text: '', slug: '' });
+    setFormData({ cat_id: '', title_id: '', year: '', text: '', slug: '', description: '', image: null, video: null });
+  };
+
+  const handleLogout = () => {
+    authService.logout();
+    navigate('/admin/login');
   };
 
   if (loading) return <div className="admin-dashboard loading">Loading...</div>;
@@ -98,55 +136,66 @@ function AdminDashboard() {
     <div className="admin-dashboard">
       <div className="dashboard-header">
         <h1>Admin Dashboard - Content Management</h1>
-        <button
-          className="btn btn-primary"
-          onClick={() => setShowForm(!showForm)}
-        >
-          {showForm ? 'Cancel' : 'Add New Content'}
-        </button>
+        <div className="header-actions">
+          <span className="username">👤 {username}</span>
+          <button
+            className="btn btn-primary"
+            onClick={() => setShowForm(!showForm)}
+          >
+            {showForm ? 'Cancel' : 'Add New Content'}
+          </button>
+          <button
+            className="btn btn-logout"
+            onClick={handleLogout}
+          >
+            Logout
+          </button>
+        </div>
       </div>
 
       {showForm && (
         <div className="form-container">
           <h2>{editingId ? 'Edit Content' : 'Add New Content'}</h2>
           <form onSubmit={handleSubmit}>
-            <div className="form-group">
-              <label>Category</label>
-              <select
-                name="cat_id"
-                value={formData.cat_id}
-                onChange={handleInputChange}
-                required
-              >
-                <option value="">Select Category</option>
-                {categories.map(cat => (
-                  <option key={cat.id} value={cat.id}>
-                    {cat.name}
-                  </option>
-                ))}
-              </select>
-            </div>
+            <div className="form-row">
+              <div className="form-group">
+                <label>Category</label>
+                <select
+                  name="cat_id"
+                  value={formData.cat_id}
+                  onChange={handleInputChange}
+                  required
+                >
+                  <option value="">Select Category</option>
+                  {categories.map(cat => (
+                    <option key={cat.id} value={cat.id}>
+                      {cat.name}
+                    </option>
+                  ))}
+                </select>
+              </div>
 
-            <div className="form-group">
-              <label>Title</label>
-              <input
-                type="text"
-                name="title_id"
-                value={formData.title_id}
-                onChange={handleInputChange}
-                required
-              />
-            </div>
+              <div className="form-group">
+                <label>Title</label>
+                <input
+                  type="text"
+                  name="title_id"
+                  value={formData.title_id}
+                  onChange={handleInputChange}
+                  required
+                />
+              </div>
 
-            <div className="form-group">
-              <label>Year</label>
-              <input
-                type="text"
-                name="year"
-                value={formData.year}
-                onChange={handleInputChange}
-                required
-              />
+              <div className="form-group">
+                <label>Year</label>
+                <input
+                  type="text"
+                  name="year"
+                  value={formData.year}
+                  onChange={handleInputChange}
+                  required
+                />
+              </div>
             </div>
 
             <div className="form-group">
@@ -161,7 +210,42 @@ function AdminDashboard() {
             </div>
 
             <div className="form-group">
-              <label>Text</label>
+              <label>Description (Short Summary)</label>
+              <input
+                type="text"
+                name="description"
+                value={formData.description}
+                onChange={handleInputChange}
+                placeholder="Ringkasan singkat konten"
+              />
+            </div>
+
+            <div className="form-row">
+              <div className="form-group">
+                <label>📸 Image Upload (Optional)</label>
+                <input
+                  type="file"
+                  name="image"
+                  onChange={handleFileChange}
+                  accept="image/*"
+                />
+                <small>Format: JPEG, PNG, GIF, WEBP | Max: 50MB</small>
+              </div>
+
+              <div className="form-group">
+                <label>🎬 Video Upload (Optional)</label>
+                <input
+                  type="file"
+                  name="video"
+                  onChange={handleFileChange}
+                  accept="video/*"
+                />
+                <small>Format: MP4, WEBM | Max: 50MB</small>
+              </div>
+            </div>
+
+            <div className="form-group">
+              <label>Content Text</label>
               <textarea
                 name="text"
                 value={formData.text}
@@ -188,7 +272,7 @@ function AdminDashboard() {
       )}
 
       <div className="table-container">
-        <h2>Contents List</h2>
+        <h2>Contents List ({contents.length})</h2>
         <table>
           <thead>
             <tr>
@@ -196,6 +280,7 @@ function AdminDashboard() {
               <th>Title</th>
               <th>Category</th>
               <th>Year</th>
+              <th>Media</th>
               <th>Actions</th>
             </tr>
           </thead>
@@ -206,6 +291,10 @@ function AdminDashboard() {
                 <td>{content.title_id}</td>
                 <td>{content.category_name || 'N/A'}</td>
                 <td>{content.year}</td>
+                <td>
+                  {content.image_url && <span className="badge-image">📸</span>}
+                  {content.video_url && <span className="badge-video">🎬</span>}
+                </td>
                 <td className="actions">
                   <button
                     className="btn btn-small btn-edit"

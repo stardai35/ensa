@@ -15,8 +15,20 @@ export const contentAPI = {
   getBySlug: (slug) => api.get(`/content/slug/${slug}`),
   getByCategory: (catId) => api.get(`/content/category/${catId}`),
   search: (query) => api.get('/content/search', { params: { q: query } }),
-  create: (data) => api.post('/content', data),
-  update: (id, data) => api.put(`/content/${id}`, data),
+  create: (data) => {
+    // Support FormData for file uploads
+    const config = data instanceof FormData ? { 
+      headers: { 'Content-Type': 'multipart/form-data' } 
+    } : {};
+    return api.post('/content', data, config);
+  },
+  update: (id, data) => {
+    // Support FormData for file uploads
+    const config = data instanceof FormData ? { 
+      headers: { 'Content-Type': 'multipart/form-data' } 
+    } : {};
+    return api.put(`/content/${id}`, data, config);
+  },
   delete: (id) => api.delete(`/content/${id}`),
 };
 
