@@ -12,7 +12,7 @@ Aplikasi **Ensiklopedia Sastra** fullstack sudah **100% SELESAI** dan siap digun
 - REST API dengan 13 endpoints
 - Database connection pooling
 - CRUD operations untuk Content & Categories
-- Search functionality
+- Search functiolity
 - Error handling & validation
 - Production-ready structure
 
