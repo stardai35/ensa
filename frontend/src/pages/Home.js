@@ -53,7 +53,7 @@ function Home() {
     if (searchQuery) {
       const query = searchQuery.toLowerCase();
       filtered = filtered.filter(content =>
-        content.title.toLowerCase().includes(query) ||
+        content.title_id.toLowerCase().includes(query) ||
         content.text.toLowerCase().includes(query) ||
         (content.description && content.description.toLowerCase().includes(query))
       );
@@ -82,7 +82,6 @@ function Home() {
       </section>
 
       <div className="main-container">
-        {/* Sidebar Categories */}
         <aside className="sidebar">
           <div className="category-sidebar">
             <h3>🎭 Kategori</h3>

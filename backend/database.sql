@@ -61,7 +61,7 @@ INSERT INTO content (cat_id, title_id, year, text, slug) VALUES
 
 (1, 'Goenawan Muhammad', '1941-sekarang',
 'Goenawan Muhammad adalah seorang penyair, penulis, dan editor terkemuka Indonesia. Beliau adalah pendiri majalah Tempo dan dikenal dengan puisi-puisinya yang artistik dan bermakna mendalam tentang kehidupan modern.',
-'goenawan-muhammad'),
+'goenawan-muhammad');
 
 -- ========== KATEGORI 2: KARYA SASTRA (10 Data) ==========
 INSERT INTO content (cat_id, title_id, year, text, slug) VALUES
@@ -103,7 +103,7 @@ INSERT INTO content (cat_id, title_id, year, text, slug) VALUES
 
 (2, 'Rumah Kaca', '1988',
 'Rumah Kaca adalah novel keempat dari tetralogi Pulau Buru karya Pramoedya Ananta Toer. Novel ini melanjutkan cerita perjuangan dengan fokus pada peran perempuan dan keluarga dalam pergerakan nasionalisme.',
-'rumah-kaca'),
+'rumah-kaca');
 
 -- ========== KATEGORI 3: MEDIA PENYEBAR/PENERBIT (8 Data) ==========
 INSERT INTO content (cat_id, title_id, year, text, slug) VALUES
@@ -137,9 +137,8 @@ INSERT INTO content (cat_id, title_id, year, text, slug) VALUES
 
 (3, 'Koran Tempo', '1994-sekarang',
 'Koran Tempo adalah surat kabar harian yang menerbitkan berbagai tulisan sastra, esai, dan kritik budaya dari para intelektual dan seniman Indonesia.',
-'koran-tempo'),
+'koran-tempo');
 
--- ========== KATEGORI 4: HADIAH/SAYEMBARA SASTRA (8 Data) ==========
 INSERT INTO content (cat_id, title_id, year, text, slug) VALUES
 (4, 'Penghargaan Sastra Asia', '1985-sekarang',
 'Penghargaan Sastra Asia adalah ajang penghargaan bergengsi yang mengakui karya-karya sastra terbaik dari berbagai negara Asia termasuk Indonesia. Penghargaan ini telah membantu mengangkat profil penulis Indonesia di tingkat internasional.',
@@ -171,9 +170,7 @@ INSERT INTO content (cat_id, title_id, year, text, slug) VALUES
 
 (4, 'Hadiah Cipta Sastra', '1988-sekarang',
 'Hadiah Cipta Sastra adalah penghargaan yang mengakui inovasi dan kreativitas dalam karya-karya sastra Indonesia. Penghargaan ini diberikan kepada penulis yang menunjukkan kontribusi signifikan terhadap perkembangan sastra.',
-'hadiah-cipta-sastra'),
-
--- ========== KATEGORI 5: LEMBAGA SASTRA (5 Data) ==========
+'hadiah-cipta-sastra');
 INSERT INTO content (cat_id, title_id, year, text, slug) VALUES
 (5, 'Dewan Kesenian Jakarta', '1968-sekarang',
 'Dewan Kesenian Jakarta adalah lembaga seni dan budaya tertua di Indonesia yang didirikan untuk mempromosikan perkembangan seni dan sastra. Lembaga ini telah memainkan peran penting dalam mengorganisir festival sastra dan penghargaan.',
@@ -193,9 +190,7 @@ INSERT INTO content (cat_id, title_id, year, text, slug) VALUES
 
 (5, 'Pusat Dokumentasi Sastra Nasional', '1992-sekarang',
 'Pusat Dokumentasi Sastra Nasional adalah lembaga yang bertugas mengumpulkan, melestarikan, dan mendokumentasikan karya-karya sastra Indonesia untuk generasi mendatang.',
-'pusat-dokumentasi-sastra'),
-
--- ========== KATEGORI 6: GEJALA SASTRA (2 Data) ==========
+'pusat-dokumentasi-sastra');
 INSERT INTO content (cat_id, title_id, year, text, slug) VALUES
 (6, 'Puisi Modern Indonesia', '1950-an',
 'Puisi modern Indonesia berkembang pesat setelah kemerdekaan. Gejala sastra ini ditandai dengan pergeseran dari puisi tradisional ke bentuk dan isi yang lebih modern, ekspresif, dan berani bereksperimen dengan tema serta teknik penulisan baru.',
@@ -205,7 +200,6 @@ INSERT INTO content (cat_id, title_id, year, text, slug) VALUES
 'Sastra Engagement atau sastra berkomitmen adalah gejala sastra yang berkembang pasca kemerdekaan Indonesia. Sastra jenis ini mengutamakan pesan sosial dan politis dalam setiap karya. Penulis-penulis mencoba menggunakan sastra sebagai alat untuk mengubah masyarakat.',
 'sastra-engagement');
 
--- Verify data
 SELECT COUNT(*) as total_content FROM content;
 SELECT cat_id, COUNT(*) as jumlah FROM content GROUP BY cat_id ORDER BY cat_id;
 SELECT * FROM category;
