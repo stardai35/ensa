@@ -4,6 +4,8 @@ import Header from '../components/Header';
 import ContentCard from '../components/ContentCard';
 import './Home.css';
 
+const ITEMS_PER_PAGE = 9;
+
 function Home() {
   const [contents, setContents] = useState([]);
   const [filteredContents, setFilteredContents] = useState([]);
@@ -11,6 +13,8 @@ function Home() {
   const [loading, setLoading] = useState(true);
   const [selectedCategory, setSelectedCategory] = useState(null);
   const [searchQuery, setSearchQuery] = useState('');
+  const [currentPage, setCurrentPage] = useState(1);
+  const [expandedFAQ, setExpandedFAQ] = useState(null);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -36,11 +40,17 @@ function Home() {
   const handleSelectCategory = (catId) => {
     setSelectedCategory(catId === selectedCategory ? null : catId);
     setSearchQuery('');
+    setCurrentPage(1);
   };
 
   const handleSearch = (query) => {
     setSearchQuery(query);
     setSelectedCategory(null);
+    setCurrentPage(1);
+  };
+
+  const toggleFAQ = (index) => {
+    setExpandedFAQ(expandedFAQ === index ? null : index);
   };
 
   const getFilteredContents = () => {
@@ -62,12 +72,44 @@ function Home() {
     return filtered;
   };
 
-  const displayedContents = getFilteredContents();
+  const allFilteredContents = getFilteredContents();
+  const totalPages = Math.ceil(allFilteredContents.length / ITEMS_PER_PAGE);
+  const startIndex = (currentPage - 1) * ITEMS_PER_PAGE;
+  const displayedContents = allFilteredContents.slice(startIndex, startIndex + ITEMS_PER_PAGE);
 
   // Get category stats
   const getCategoryCount = (catId) => {
     return contents.filter(c => c.cat_id === catId).length;
   };
+
+  // FAQ Data
+  const faqData = [
+    {
+      id: 1,
+      question: "Apa itu Ensiklopedia Sastra Indonesia?",
+      answer: "Ensiklopedia Sastra Indonesia adalah platform digital komprehensif yang menyediakan informasi lengkap tentang dunia sastra Indonesia. Platform ini mencakup data tentang pengarang, karya sastra, media penyebar, hadiah/sayembara, lembaga sastra, dan berbagai gejala dalam perkembangan sastra Indonesia."
+    },
+    {
+      id: 2,
+      question: "Apa tujuan dibuatnya Ensiklopedia Sastra Indonesia?",
+      answer: "Tujuan utama ensiklopedia ini adalah melestarikan dan mempromosikan warisan sastra Indonesia, memfasilitasi penelitian akademik, dan meningkatkan apresiasi masyarakat terhadap karya sastra Indonesia. Kami berkomitmen menjadi referensi terpercaya bagi peneliti, penulis, dan pecinta sastra."
+    },
+    {
+      id: 3,
+      question: "Apa saja informasi yang tersedia di ensiklopedia ini?",
+      answer: "Ensiklopedia ini menyediakan informasi tentang: Pengarang terkenal Indonesia, Karya sastra (novel, puisi, drama, dll), Media penyebar sastra, Hadiah dan penghargaan sastra, Lembaga dan organisasi sastra, serta Gejala dan fenomena dalam sastra Indonesia."
+    },
+    {
+      id: 4,
+      question: "Apakah semua konten di ensiklopedia ini gratis?",
+      answer: "Ya, semua konten yang tersedia di Ensiklopedia Sastra Indonesia dapat diakses secara gratis. Kami percaya bahwa pengetahuan tentang sastra Indonesia harus dapat diakses oleh semua kalangan tanpa hambatan biaya."
+    },
+    {
+      id: 5,
+      question: "Bagaimana jika menemukan kesalahan atau ingin memberi saran?",
+      answer: "Kami sangat menghargai masukan dari pengguna. Jika Anda menemukan kesalahan atau ingin memberi saran untuk perbaikan, silakan hubungi tim kami melalui formulir kontak yang tersedia di halaman Tentang Kami atau kirim email ke tim@ensiklopedia-sastra.id."
+    }
+  ];
 
   return (
     <div className="home">
@@ -144,7 +186,7 @@ function Home() {
               ) : (
                 <h2>Semua Konten Sastra</h2>
               )}
-              <p className="result-count">Ditemukan {displayedContents.length} hasil</p>
+              <p className="result-count">Ditemukan {allFilteredContents.length} hasil (halaman {currentPage} dari {totalPages || 1})</p>
             </div>
           </div>
 
@@ -176,8 +218,71 @@ function Home() {
               ))}
             </div>
           )}
+
+          {/* Pagination */}
+          {totalPages > 1 && displayedContents.length > 0 && (
+            <div className="pagination">
+              <button 
+                className="pagination-btn"
+                onClick={() => setCurrentPage(currentPage - 1)}
+                disabled={currentPage === 1}
+              >
+                ← Sebelumnya
+              </button>
+              <div className="page-info">
+                {Array.from({ length: totalPages }, (_, i) => i + 1).map((page) => (
+                  <button
+                    key={page}
+                    className={`page-number ${currentPage === page ? 'active' : ''}`}
+                    onClick={() => setCurrentPage(page)}
+                  >
+                    {page}
+                  </button>
+                ))}
+              </div>
+              <button 
+                className="pagination-btn"
+                onClick={() => setCurrentPage(currentPage + 1)}
+                disabled={currentPage === totalPages}
+              >
+                Selanjutnya →
+              </button>
+            </div>
+          )}
         </main>
       </div>
+
+      {/* FAQ Section */}
+      <section className="faq-section">
+        <div className="faq-container">
+          <div className="faq-header">
+            <h2>❓ Pertanyaan yang Sering Ditanyakan</h2>
+            <p>Temukan jawaban untuk pertanyaan umum tentang Ensiklopedia Sastra Indonesia</p>
+          </div>
+          
+          <div className="faq-list">
+            {faqData.map((faq, index) => (
+              <div 
+                key={faq.id} 
+                className={`faq-item ${expandedFAQ === index ? 'expanded' : ''}`}
+              >
+                <button 
+                  className="faq-question"
+                  onClick={() => toggleFAQ(index)}
+                >
+                  <span className="question-text">{faq.question}</span>
+                  <span className="toggle-icon">{expandedFAQ === index ? '▼' : '▶'}</span>
+                </button>
+                {expandedFAQ === index && (
+                  <div className="faq-answer">
+                    <p>{faq.answer}</p>
+                  </div>
+                )}
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
     </div>
   );
 }
