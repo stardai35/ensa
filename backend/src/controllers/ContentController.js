@@ -59,9 +59,9 @@ class ContentController {
 
   static async create(req, res) {
     try {
-      const { cat_id, title_id, year, text, slug, description } = req.body;
+      const { cat_id, title, year, text, slug, description } = req.body;
       
-      if (!cat_id || !title_id || !year || !text || !slug) {
+      if (!cat_id || !title || !year || !text || !slug) {
         return res.status(400).json({ message: 'Missing required fields' });
       }
 
@@ -76,7 +76,7 @@ class ContentController {
       }
 
       const id = await Content.create({ 
-        cat_id, title_id, year, text, slug, image_url, video_url, description 
+        cat_id, title, year, text, slug, image_url, video_url, description 
       });
       res.status(201).json({ id, message: 'Content created successfully' });
     } catch (error) {
@@ -87,7 +87,7 @@ class ContentController {
   static async update(req, res) {
     try {
       const { id } = req.params;
-      const { cat_id, title_id, year, text, slug, description } = req.body;
+      const { cat_id, title, year, text, slug, description } = req.body;
 
       const existing = await Content.getById(id);
       if (!existing) {
@@ -105,7 +105,7 @@ class ContentController {
       }
 
       const result = await Content.update(id, { 
-        cat_id, title_id, year, text, slug, image_url, video_url, description 
+        cat_id, title, year, text, slug, image_url, video_url, description 
       });
       if (result === 0) {
         return res.status(404).json({ message: 'Content not found' });

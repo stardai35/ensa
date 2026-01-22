@@ -1,6 +1,3 @@
-// Simple authentication for admin panel
-// Default credentials: admin / admin123
-
 const DEFAULT_ADMIN = {
   username: 'admin',
   password: 'admin123',

@@ -14,7 +14,7 @@ function AdminDashboard() {
   const username = authService.getUsername();
   const [formData, setFormData] = useState({
     cat_id: '',
-    title_id: '',
+    title: '',
     year: '',
     text: '',
     slug: '',
@@ -63,7 +63,7 @@ function AdminDashboard() {
     try {
       const formDataToSend = new FormData();
       formDataToSend.append('cat_id', formData.cat_id);
-      formDataToSend.append('title_id', formData.title_id);
+      formDataToSend.append('title', formData.title);
       formDataToSend.append('year', formData.year);
       formDataToSend.append('text', formData.text);
       formDataToSend.append('slug', formData.slug);
@@ -85,7 +85,7 @@ function AdminDashboard() {
       }
       setShowForm(false);
       setEditingId(null);
-      setFormData({ cat_id: '', title_id: '', year: '', text: '', slug: '', description: '', image: null, video: null });
+      setFormData({ cat_id: '', title: '', year: '', text: '', slug: '', description: '', image: null, video: null });
       fetchData();
     } catch (error) {
       alert('Error saving content: ' + error.message);
@@ -95,7 +95,7 @@ function AdminDashboard() {
   const handleEdit = (content) => {
     setFormData({
       cat_id: content.cat_id,
-      title_id: content.title_id,
+      title: content.title,
       year: content.year,
       text: content.text,
       slug: content.slug,
@@ -122,7 +122,7 @@ function AdminDashboard() {
   const handleCancel = () => {
     setShowForm(false);
     setEditingId(null);
-    setFormData({ cat_id: '', title_id: '', year: '', text: '', slug: '', description: '', image: null, video: null });
+    setFormData({ cat_id: '', title: '', year: '', text: '', slug: '', description: '', image: null, video: null });
   };
 
   const handleLogout = () => {
@@ -179,8 +179,8 @@ function AdminDashboard() {
                 <label>Title</label>
                 <input
                   type="text"
-                  name="title_id"
-                  value={formData.title_id}
+                  name="title"
+                  value={formData.title}
                   onChange={handleInputChange}
                   required
                 />
@@ -288,7 +288,7 @@ function AdminDashboard() {
             {contents.map(content => (
               <tr key={content.id}>
                 <td>{content.id}</td>
-                <td>{content.title_id}</td>
+                <td>{content.title}</td>
                 <td>{content.category_name || 'N/A'}</td>
                 <td>{content.year}</td>
                 <td>

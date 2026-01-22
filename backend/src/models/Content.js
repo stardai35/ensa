@@ -33,19 +33,19 @@ class Content {
   }
 
   static async create(data) {
-    const { cat_id, title_id, year, text, slug, image_url, video_url, description } = data;
+    const { cat_id, title, year, text, slug, image_url, video_url, description } = data;
     const [result] = await pool.query(
-      'INSERT INTO content (cat_id, title_id, year, text, slug, image_url, video_url, description) VALUES (?, ?, ?, ?, ?, ?, ?, ?)',
-      [cat_id, title_id, year, text, slug, image_url || null, video_url || null, description || null]
+      'INSERT INTO content (cat_id, title, year, text, slug, image_url, video_url, description) VALUES (?, ?, ?, ?, ?, ?, ?, ?)',
+      [cat_id, title, year, text, slug, image_url || null, video_url || null, description || null]
     );
     return result.insertId;
   }
 
   static async update(id, data) {
-    const { cat_id, title_id, year, text, slug, image_url, video_url, description } = data;
+    const { cat_id, title, year, text, slug, image_url, video_url, description } = data;
     const [result] = await pool.query(
-      'UPDATE content SET cat_id = ?, title_id = ?, year = ?, text = ?, slug = ?, image_url = ?, video_url = ?, description = ? WHERE id = ?',
-      [cat_id, title_id, year, text, slug, image_url || null, video_url || null, description || null, id]
+      'UPDATE content SET cat_id = ?, title = ?, year = ?, text = ?, slug = ?, image_url = ?, video_url = ?, description = ? WHERE id = ?',
+      [cat_id, title, year, text, slug, image_url || null, video_url || null, description || null, id]
     );
     return result.affectedRows;
   }
@@ -57,7 +57,7 @@ class Content {
 
   static async search(query) {
     const [rows] = await pool.query(
-      'SELECT c.*, cat.name as category_name FROM content c LEFT JOIN category cat ON c.cat_id = cat.id WHERE c.title_id LIKE ? OR c.text LIKE ? OR c.description LIKE ?',
+      'SELECT c.*, cat.name as category_name FROM content c LEFT JOIN category cat ON c.cat_id = cat.id WHERE c.title LIKE ? OR c.text LIKE ? OR c.description LIKE ?',
       [`%${query}%`, `%${query}%`, `%${query}%`]
     );
     return rows;

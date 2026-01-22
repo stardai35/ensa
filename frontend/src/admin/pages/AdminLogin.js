@@ -32,7 +32,7 @@ function AdminLogin() {
   return (
     <div className="admin-login-container">
       <div className="login-box">
-        <h1>📚 Admin Panel</h1>
+        <h1>Admin Panel</h1>
         <h2>Ensiklopedia Sastra</h2>
         
         <form onSubmit={handleLogin}>

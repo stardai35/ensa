@@ -12,3 +12,4 @@ router.put('/:id', CategoryController.update);
 router.delete('/:id', CategoryController.delete);
 
 module.exports = router;
+
