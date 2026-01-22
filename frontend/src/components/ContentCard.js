@@ -22,7 +22,7 @@ function ContentCard({ content }) {
     <div className="content-card">
       {hasImage ? (
         <div className="card-media">
-          <img src={`http://localhost:5000${content.image_url}`} alt={content.title_id} />
+          <img src={`http://localhost:5000${content.image_url}`} alt={content.title} />
           {hasVideo && <span className="video-badge">🎬 Video</span>}
         </div>
       ) : (
@@ -32,15 +32,15 @@ function ContentCard({ content }) {
       )}
       
       <div className="card-header">
-        <h3 title={content.title_id}>{content.title_id}</h3>
+        <h3 title={content.title}>{content.title}</h3>
         <span className="category-badge">
           {getCategoryEmoji(content.cat_id)} {content.category_name || 'Lainnya'}
         </span>
       </div>
       
       <div className="card-body">
-        <p className="year">📅 {content.year}</p>
         {content.description && <p className="description">{content.description}</p>}
+        <p className="year">📅 {content.year}</p>
         <p className="text">{content.text.substring(0, 120)}...</p>
       </div>
       
